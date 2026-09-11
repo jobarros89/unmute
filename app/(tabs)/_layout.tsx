@@ -23,7 +23,7 @@ export default function TabLayout() {
           paddingTop: 8,
           paddingBottom: Math.max(8, insets.bottom),
         },
-        tabBarLabelStyle: { fontSize: 12, fontWeight: "600" },
+        tabBarLabelStyle: { fontSize: 12, lineHeight: 18, fontWeight: "600" },
       }}
     >
       <Tabs.Screen
