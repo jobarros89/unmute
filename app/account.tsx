@@ -20,6 +20,7 @@ export default function Account() {
   >("login");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+
   async function submit() {
     if (busy) return;
     setBusy(true);
@@ -27,6 +28,7 @@ export default function Account() {
     try {
       const db = requireBackend();
       const address = email.trim().toLowerCase();
+
       if (mode === "password") {
         if (password.length < 12)
           throw new Error("Use uma senha com pelo menos 12 caracteres.");
@@ -35,7 +37,9 @@ export default function Account() {
         router.replace("/");
         return;
       }
+
       if (!address.includes("@")) throw new Error("Informe um e-mail válido.");
+
       if (mode === "verify" || mode === "recovery") {
         const { error } = await db.auth.verifyOtp({
           email: address,
@@ -43,11 +47,24 @@ export default function Account() {
           type: mode === "verify" ? "signup" : "recovery",
         });
         if (error) throw error;
+
         if (mode === "recovery") {
           router.replace("/password");
-        } else router.replace("/");
+          return;
+        }
+
+        // O OTP de confirmação cria uma sessão no Supabase. Encerramos essa
+        // sessão imediatamente para que confirmar o e-mail não seja o mesmo
+        // que entrar: o usuário ainda precisa informar a senha cadastrada.
+        const { error: signOutError } = await db.auth.signOut();
+        if (signOutError) throw signOutError;
+        setToken("");
+        setPassword("");
+        setMode("login");
+        setMessage("E-mail confirmado. Agora entre com seu e-mail e senha.");
         return;
       }
+
       if (mode === "reset") {
         const { error } = await db.auth.resetPasswordForEmail(address, {
           redirectTo: authRedirectTo,
@@ -57,8 +74,12 @@ export default function Account() {
         setMessage("Se o e-mail estiver cadastrado, você receberá um código.");
         return;
       }
+
       if (mode === "signup" && password.length < 12)
         throw new Error("Use uma senha com pelo menos 12 caracteres.");
+      if (mode === "login" && !password)
+        throw new Error("Digite sua senha para entrar.");
+
       const result =
         mode === "signup"
           ? await db.auth.signUp({
@@ -68,13 +89,26 @@ export default function Account() {
             })
           : await db.auth.signInWithPassword({ email: address, password });
       if (result.error) throw result.error;
-      if (result.data.session) router.replace("/");
-      else {
+
+      if (mode === "signup") {
+        // Mesmo se a configuração remota estiver permissiva e devolver uma
+        // sessão no cadastro, o aplicativo não libera acesso antes da etapa
+        // explícita de confirmação + login com senha.
+        if (result.data.session) {
+          const { error: signOutError } = await db.auth.signOut();
+          if (signOutError) throw signOutError;
+        }
+        setPassword("");
         setMode("verify");
         setMessage(
-          "Confira seu e-mail. Se recebeu um código, digite abaixo. Se recebeu um link, clique para confirmar e depois volte aqui e escolha Já tenho conta para entrar.",
+          "Confira seu e-mail e digite o código de confirmação abaixo. Depois, entre com sua senha.",
         );
+        return;
       }
+
+      if (!result.data.session)
+        throw new Error("Não foi possível iniciar sua sessão. Tente novamente.");
+      router.replace("/");
     } catch (e) {
       setMessage(
         e instanceof Error
@@ -85,6 +119,7 @@ export default function Account() {
       setBusy(false);
     }
   }
+
   return (
     <Screen>
       <Button
@@ -99,8 +134,8 @@ export default function Account() {
           <Text style={styles.heading}>Sua conta</Text>
           <Text style={styles.body}>{session.user.email}</Text>
           <Text style={styles.small}>
-            Você já está conectado. O link de confirmação também permite entrar;
-            sua sessão fica salva neste aparelho até você sair.
+            Você está conectado. Sua sessão fica salva neste aparelho até você
+            sair.
           </Text>
           <Button
             label="Continuar meus treinos"
