@@ -6,7 +6,7 @@ Aplicativo Expo para treinos curtos de listening, repetição e conversa. Esta b
 
 ## Estado real da entrega
 
-O código da aplicação e do backend está implementado. **O projeto Supabase ainda não foi provisionado, a chave OpenAI não está configurada e não há publicação ou APK/IPA nesta entrega.** Contas, sincronização e coach exigem esses serviços. Sem configuração, o aplicativo oferece prática local e informa que as contas ainda não estão disponíveis.
+O código da aplicação e do backend está implementado. **O projeto Supabase está ativo em São Paulo, a migration foi aplicada e a função coach está publicada. A chave OpenAI e os ajustes de e-mail/Auth ainda estão pendentes; não há publicação do cliente nem APK/IPA nesta entrega.** Contas, sincronização e coach exigem esses serviços. Sem configuração, o aplicativo oferece prática local e informa que as contas ainda não estão disponíveis.
 
 | Funcionalidade        | Implementação                                                                       |
 | --------------------- | ----------------------------------------------------------------------------------- |

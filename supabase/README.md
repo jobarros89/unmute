@@ -1,6 +1,6 @@
 # Backend Unmute
 
-Migration `20260911150137_authenticated_learning.sql` gerada pela CLI e validada em PostgreSQL embutido. **Ainda não aplicada em Supabase remoto.**
+Migration `20260911153116_authenticated_learning.sql` gerada pela CLI e validada em PostgreSQL embutido. **Aplicada no projeto Unmute `zzggiswlsgnanargqgir`, região `sa-east-1`.** O nome do arquivo foi alinhado à versão registrada pela migration remota.
 
 | Tabela           | Acesso do aplicativo                                               |
 | ---------------- | ------------------------------------------------------------------ |

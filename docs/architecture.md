@@ -53,4 +53,4 @@ AuthProvider identifica a conta; LearningProvider é recriado por user_id para s
 
 Rotas adicionais: account, password, assessment, rooms e review. O plano diário usa objetivo/meta e a conclusão do dia. Revisões são produzidas a partir de correções do coach, com agendamento por autorrelato de lembrança. Não há um currículo adaptativo completo nem certificação CEFR.
 
-A camada de backend implementada é Supabase Auth/Postgres/Edge Functions. A ativação remota está pendente; ver docs/deployment.md. A tabela anterior de fronteiras descreve a fundação e seu destino; agora há código de integração, mas não um backend publicado.
+A camada de backend implementada é Supabase Auth/Postgres/Edge Functions. Projeto remoto, tabelas e Edge Function provisionados; credencial OpenAI, Auth/templates e publicação do cliente ainda pendentes. Ver docs/deployment.md. A tabela anterior de fronteiras descreve a fundação e seu destino; agora há código de integração, mas não um backend publicado.

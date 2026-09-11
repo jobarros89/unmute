@@ -2,10 +2,10 @@
 
 ## Pendências externas reais
 
-1. Escolher a organização para o novo projeto Supabase `Unmute`. A integração exige escolha explícita da organização e confirmação do custo retornado. A única organização encontrada foi `jobarros89`; ainda não foi selecionada pelo usuário para este projeto.
-2. Criar projeto separado, preferencialmente em São Paulo (`sa-east-1`), após a confirmação de custo. Não reutilizar o projeto LUNOR.
+1. Concluído: organização `jobarros89` escolhida pelo usuário. Custo informado pela integração: US$ 0/mês.
+2. Concluído: projeto Unmute `zzggiswlsgnanargqgir` ativo em São Paulo (`sa-east-1`), separado do LUNOR.
 3. Configurar a chave OpenAI pelo fluxo seguro. A criação já foi autorizada em conversa anterior, mas falhou com 401 naquele momento; nenhuma chave foi encontrada neste ambiente. Não pedir que o usuário cole uma chave no chat.
-4. Aplicar migration, configurar Auth e publicar `coach`; testar antes de publicar o cliente.
+4. Migration aplicada e `coach` publicado na versão 1. Ajustes reais de Auth/templates/SMTP e testes HTTP ponta a ponta ainda pendentes. A conexão disponível não expõe alteração de Auth e não há token de administração local.
 5. Registrar o projeto EAS e configurar assinatura para distribuir APK/IPA. Os perfis existentes são configuração de código, não builds concluídos.
 
 ## Aplicar banco e função
@@ -42,3 +42,14 @@ Para telefone, vincular o projeto EAS e usar o perfil `preview`. iOS exige crede
 ## Teste de aceitação obrigatório antes de declarar pronto
 
 Criar conta → receber código → confirmar → definir objetivo → fazer listening → gravar → enviar ao coach → receber correção → abrir revisão → salvar treino → sair → entrar em outro aparelho → conferir histórico. Repetir com um segundo usuário para isolamento. Testar também senha esquecida, áudio sem permissão, rede indisponível, limite diário e indisponibilidade OpenAI.
+
+## Evidências do provisionamento
+
+- API: https://zzggiswlsgnanargqgir.supabase.co
+- Dashboard: https://supabase.com/dashboard/project/zzggiswlsgnanargqgir
+- Migration remota: 20260911153116 — authenticated_learning.
+- Seis tabelas criadas, todas com RLS. Teste transacional confirmou zero perfis visíveis entre dois usuários e rollback sem manter contas de teste.
+- Advisor de segurança: apenas INFO para private.ai_usage sem política; intencional, pois clientes não têm acesso e somente service_role administra a cota. Nenhum WARN/ERROR de segurança retornado.
+- Tipos reais exportados em src/lib/database.types.ts.
+- CI do commit 7c12a88a54d0f0dd72426c7516f5fa36cb2fc42b aprovado.
+- O formulário de confirmação do destino da chave OpenAI falhou duas vezes com erro de validação targetPath; nenhuma chave foi criada ou escrita nesta etapa. É necessária confirmação textual do destino como fallback.

@@ -12,7 +12,7 @@ test("Postgres: migration, account isolation, protected feedback and atomic quot
     await db.exec(
       readFileSync(
         new URL(
-          "../supabase/migrations/20260911150137_authenticated_learning.sql",
+          "../supabase/migrations/20260911153116_authenticated_learning.sql",
           import.meta.url,
         ),
         "utf8",

@@ -1,6 +1,6 @@
 # Coach Unmute
 
-Implementado em `supabase/functions/coach/index.ts`. Não ativado em ambiente remoto nesta entrega.
+Implementado em `supabase/functions/coach/index.ts`. Publicado no projeto Unmute, versão 1. Sem OPENAI_API_KEY configurada, a análise retorna indisponibilidade; não foi validada com uma chamada real ao provedor.
 
 - GPT-5 via Responses API para feedback de gramática, vocabulário e continuação da conversa.
 - `gpt-4o-mini-transcribe` para voz; síntese das frases e respostas usa a voz inglesa do dispositivo via expo-speech.
