@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Unmute",
+    "slug": "unmute",
+    "scheme": "unmute",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jobarros89.unmute"
+    },
+    "android": {
+      "package": "com.jobarros89.unmute"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Permita que o Unmute grave sua voz durante os treinos de inglês."
+        }
+      ],
+      "expo-font"
+    ]
+  }
+}
