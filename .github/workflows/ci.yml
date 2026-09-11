@@ -1,12 +1,17 @@
 name: Validate Unmute
+
+# Modo econômico temporário: a franquia mensal do GitHub Actions está esgotada.
+# O workflow fica disponível somente para execução manual até a franquia voltar.
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
   group: unmute-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
