@@ -5,68 +5,14 @@ import { Button, Card, styles } from "../../components/ui";
 import { useAuth } from "../auth/provider";
 import { stopEnglish } from "./speech";
 
-type Clip = {
-  id: string;
-  owner: string;
-  date: string;
-  label: string;
-  blob: Blob;
-};
-async function database() {
-  return new Promise<IDBDatabase>((resolve, reject) => {
-    const request = indexedDB.open("unmute-recordings", 1);
-    request.onupgradeneeded = () => {
-      const store = request.result.createObjectStore("clips", {
-        keyPath: "id",
-      });
-      store.createIndex("owner", "owner");
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
-async function clipsFor(owner: string): Promise<Clip[]> {
-  const db = await database();
-  try {
-    return await new Promise((resolve, reject) => {
-      const request = db
-        .transaction("clips")
-        .objectStore("clips")
-        .index("owner")
-        .getAll(owner);
-      request.onsuccess = () => resolve(request.result as Clip[]);
-      request.onerror = () => reject(request.error);
-    });
-  } finally {
-    db.close();
-  }
-}
-async function saveClip(clip: Clip) {
-  const db = await database();
-  try {
-    await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction("clips", "readwrite");
-      const store = tx.objectStore("clips");
-      const count = store.index("owner").count(clip.owner);
-      count.onsuccess = () => {
-        if (count.result >= 20) {
-          tx.abort();
-          return;
-        }
-        store.put(clip);
-      };
-      tx.oncomplete = () => resolve();
-      tx.onabort = tx.onerror = () =>
-        reject(
-          new Error(
-            "Limite de 20 gravações ou armazenamento indisponível. Exclua uma gravação em Meu progresso e tente novamente.",
-          ),
-        );
-    });
-  } finally {
-    db.close();
-  }
-}
+import {
+  type Clip,
+  database,
+  clipsFor,
+  saveClip,
+  recordingStorageMessage,
+} from "./recording-storage";
+
 export function AudioReview({
   uri,
   label = "Minha tentativa",
@@ -136,11 +82,7 @@ export function AudioReview({
                 });
               })
               .then(() => setSaved(true))
-              .catch((e) =>
-                setMessage(
-                  e instanceof Error ? e.message : "Não foi possível salvar.",
-                ),
-              )
+              .catch((e) => setMessage(recordingStorageMessage(e)))
               .finally(() => setBusy(false));
           }}
         />
@@ -188,6 +130,7 @@ export function SavedRecordings() {
     useCallback(() => {
       let active = true;
       setClips([]);
+      setError("");
       if (session)
         void clipsFor(session.user.id)
           .then((rows) => {
