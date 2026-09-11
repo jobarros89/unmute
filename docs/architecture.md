@@ -46,3 +46,11 @@ Não criar um conjunto grande de tabelas antecipadamente. Começar pelo mínimo 
 - [Supabase com React Native](https://supabase.com/docs/guides/auth/quickstarts/react-native)
 
 Essas referências apoiam a arquitetura. Integrações planejadas ainda exigem validação no projeto real.
+
+## Incremento autenticado 0.2
+
+AuthProvider identifica a conta; LearningProvider é recriado por user_id para separar memória e histórico entre logins. Visitantes usam a persistência local original; contas usam profiles e lesson_sessions, sem importar silenciosamente dados locais. Operações autenticadas exigem conexão e só atualizam o estado após sucesso remoto.
+
+Rotas adicionais: account, password, assessment, rooms e review. O plano diário usa objetivo/meta e a conclusão do dia. Revisões são produzidas a partir de correções do coach, com agendamento por autorrelato de lembrança. Não há um currículo adaptativo completo nem certificação CEFR.
+
+A camada de backend implementada é Supabase Auth/Postgres/Edge Functions. A ativação remota está pendente; ver docs/deployment.md. A tabela anterior de fronteiras descreve a fundação e seu destino; agora há código de integração, mas não um backend publicado.

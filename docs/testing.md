@@ -45,3 +45,9 @@ Testar pelo menos um iPhone e um Android. Em web, executar em localhost/HTTPS e 
 - Só a gravação aceita de cada frase entra no tempo contabilizado.
 - Encerramento abrupto pode deixar um arquivo temporário no cache do sistema.
 - Não há build EAS, validação em dispositivo físico, IA ativa ou banco provisionado.
+
+## Incremento autenticado
+
+`tests/database.test.ts` aplica a migration no PostgreSQL embutido PGlite, cria papéis isolados e verifica: negação de leitura cruzada; negação de escrita de respostas IA pelo cliente; negação de execução das RPCs pelo cliente; revisão criada atomicamente; campo de correção imutável pelo cliente; cota de 30 pedidos e idempotência. A função auth.uid() é simulada por claim de sessão de teste. Isso não cobre o gateway HTTP, Auth real nem entrega de e-mail.
+
+`tests/plan.test.ts` cobre orçamento diário e dias consecutivos com datas locais. `deno check` valida a Edge Function. Testes ao vivo com Supabase, OpenAI, navegador e microfone em aparelho ainda não foram executados nesta entrega. O roteiro completo está em docs/deployment.md.

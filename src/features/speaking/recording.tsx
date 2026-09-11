@@ -28,9 +28,13 @@ function removeTake(uri: string | null) {
 export function Recording({
   onTake,
   onBusy,
+  onUri,
+  disabled = false,
 }: {
   onTake: (seconds: number) => void;
   onBusy: (busy: boolean) => void;
+  onUri?: (uri: string | null) => void;
+  disabled?: boolean;
 }) {
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(recorder, 200);
@@ -44,8 +48,8 @@ export function Recording({
   const lock = useRef(false);
   const savedUri = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const callbacks = useRef({ onTake, onBusy });
-  callbacks.current = { onTake, onBusy };
+  const callbacks = useRef({ onTake, onBusy, onUri });
+  callbacks.current = { onTake, onBusy, onUri };
   const stopRef = useRef<(discard?: boolean) => Promise<void>>(
     async () => undefined,
   );
@@ -85,6 +89,7 @@ export function Recording({
       player.replace(nextUri);
       setUri(nextUri);
       callbacks.current.onTake(seconds);
+      callbacks.current.onUri?.(nextUri);
     } catch (cause) {
       if (mounted.current)
         setError(
@@ -124,6 +129,7 @@ export function Recording({
       savedUri.current = null;
       setUri(null);
       callbacks.current.onTake(0);
+      callbacks.current.onUri?.(null);
       await setAudioModeAsync({
         allowsRecording: true,
         playsInSilentMode: true,
@@ -230,6 +236,7 @@ export function Recording({
           void (recording ? stop() : start());
         }}
         busy={busy}
+        disabled={disabled}
       />
       {uri && !recording ? (
         <Button
@@ -245,8 +252,8 @@ export function Recording({
         </Text>
       ) : null}
       <Text style={styles.small}>
-        Sua gravação fica temporariamente neste aparelho e não é enviada para
-        análise.
+        Sua gravação fica temporariamente neste aparelho. Só é enviada se você
+        escolher uma ação de análise.
       </Text>
     </>
   );

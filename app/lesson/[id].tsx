@@ -18,6 +18,8 @@ import {
 } from "../../src/features/learning/lessons";
 import { useLearning } from "../../src/features/learning/provider";
 import { Recording } from "../../src/features/speaking/recording";
+import { CoachPanel } from "../../src/features/conversation/coach-panel";
+import { useAuth } from "../../src/features/auth/provider";
 
 function ExerciseView({
   exercise,
@@ -33,6 +35,9 @@ function ExerciseView({
   error: string;
 }) {
   const [revealed, setRevealed] = useState(false);
+  const { session } = useAuth();
+  const [coachId] = useState(randomUUID);
+  const [showCoach, setShowCoach] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [recordingBusy, setRecordingBusy] = useState(false);
   const [seconds, setSeconds] = useState(0);
@@ -77,13 +82,13 @@ function ExerciseView({
         <Button
           label={speaking ? "Repetir a frase" : "Ouvir a frase"}
           onPress={() => void listen(0.9)}
-          disabled={recordingBusy || saving}
+          disabled={recordingBusy || saving || showCoach}
         />
         <Button
           label="Ouvir mais devagar"
           onPress={() => void listen(0.65)}
           secondary
-          disabled={recordingBusy || saving}
+          disabled={recordingBusy || saving || showCoach}
         />
         {!revealed ? (
           <Button
@@ -110,7 +115,11 @@ function ExerciseView({
           <Card>
             <Text style={styles.eyebrow}>02 · Entenda e repita</Text>
             <Text style={styles.body}>{exercise.tip}</Text>
-            <Recording onTake={setSeconds} onBusy={setRecordingBusy} />
+            <Recording
+              onTake={setSeconds}
+              onBusy={setRecordingBusy}
+              disabled={showCoach}
+            />
           </Card>
           <Card>
             <Text style={styles.eyebrow}>03 · Traga para sua vida</Text>
@@ -125,9 +134,30 @@ function ExerciseView({
               {error}
             </Text>
           ) : null}
+          {session ? (
+            <>
+              <Button
+                label={
+                  showCoach ? "Fechar coach" : "Praticar esta frase com o coach"
+                }
+                secondary
+                onPress={() => setShowCoach(!showCoach)}
+              />
+              {showCoach ? (
+                <CoachPanel
+                  context={{
+                    mode: "drill",
+                    topic: "practice",
+                    reference: exercise.phrase,
+                    conversationId: coachId,
+                  }}
+                />
+              ) : null}
+            </>
+          ) : null}
           <Button
             label={last ? "Concluir e salvar treino" : "Próxima frase →"}
-            disabled={seconds <= 0 || recordingBusy}
+            disabled={seconds <= 0 || recordingBusy || showCoach}
             busy={saving}
             onPress={() => onNext(seconds)}
           />

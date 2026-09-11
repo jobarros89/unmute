@@ -2,40 +2,40 @@
 
 **Seu inglês. Na vida real.**
 
-Aplicativo de inglês para quem quer compreender conversas e destravar a fala com treinos que cabem no dia a dia.
+Aplicativo Expo para treinos curtos de listening, repetição e conversa. Esta branch evolui a base de `feat/bootstrap-mobile`; preserva o treinamento local e adiciona o fluxo autenticado.
 
-O ciclo do produto é **ouvir → entender → falar → receber feedback → repetir em outro contexto**. Esta primeira entrega implementa a fundação mobile e uma prática guiada local. A correção por IA ainda não está conectada.
+## Estado real da entrega
 
-## O que já existe
+O código da aplicação e do backend está implementado. **O projeto Supabase ainda não foi provisionado, a chave OpenAI não está configurada e não há publicação ou APK/IPA nesta entrega.** Contas, sincronização e coach exigem esses serviços. Sem configuração, o aplicativo oferece prática local e informa que as contas ainda não estão disponíveis.
 
-- Onboarding com nome opcional, objetivo e meta diária de 5, 10 ou 20 minutos.
-- Navegação entre Hoje, Praticar e Meu progresso.
-- Três treinos autorais: cotidiano, trabalho e viagem, com nove frases ao todo.
-- Reprodução em inglês e velocidade reduzida, usando a voz do aparelho.
-- Revelação da tradução, dica de uso e desafio de adaptação da frase.
-- Gravação de até 30 segundos, reprodução da própria voz e nova tentativa.
-- Histórico local de treinos concluídos, repetições e segundos nas gravações aceitas.
-- Validação de dados, prevenção de conclusão duplicada e proteção contra sobrescrever histórico inválido.
-- Testes de domínio e workflow de CI para verificar tipos, testes e bundles mobile/web.
+| Funcionalidade        | Implementação                                                                       |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| Onboarding            | Nome, objetivo e meta diária de 5, 10 ou 20 minutos                                 |
+| Plano diário          | Distribuição do tempo entre treino guiado, conversa e revisão                       |
+| Listening e shadowing | Nove frases autorais, voz do aparelho, tradução e adaptação                         |
+| Gravação              | Tentativas de até 30 segundos e reprodução local                                    |
+| Conta                 | E-mail/senha, confirmação por código, recuperação por código e saída                |
+| Sincronização         | Perfil e conclusões por usuário; gravação confirmada após resposta do banco         |
+| Diagnóstico           | Três itens de listening e autorrelato de conforto ao falar; não certifica CEFR      |
+| Unmute Rooms          | Aeroporto, trabalho e cafeteria; voz ou texto com contexto das últimas interações   |
+| Coach                 | Transcrição e feedback de linguagem por Edge Function; GPT-5 no servidor            |
+| Revisão               | Correções reais das conversas; intervalos de 10 minutos a 30 dias                   |
+| Progresso             | Histórico, repetições, duração gravada e sequência de dias locais                   |
+| Segurança             | RLS, acesso privilegiado só no servidor, cotas transacionais e validação de entrada |
 
-**Ainda não implementado:** login, banco remoto, sincronização, diagnóstico de nível, correção por IA, conversação livre, revisão adaptativa, notificações ou cobrança. A meta diária é uma preferência; ainda não há motor que distribua o tempo em um plano personalizado.
+Não implementados: currículo completo A1–C1, avaliação acústica de pronúncia, comparação de gravações entre semanas, assinaturas, notificações e publicação nas lojas. O diagnóstico curto e o tempo praticado não são medidas comprovadas de fluência.
 
 ## Rodar
 
-Pré-requisito: Node.js 24 e npm. As versões estão fixadas no `package-lock.json`.
+Node.js 24 e npm:
 
 ```bash
 npm ci
-npm start
-```
-
-Abra com uma versão do Expo Go compatível com o SDK 57 ou com um development build. Para verificar as telas no navegador:
-
-```bash
 npm run web
+# Ou: npm start, para Expo Go compatível com SDK 57
 ```
 
-O treino local funciona sem Supabase e sem chave de IA. O aparelho precisa de uma voz inglesa disponível. No iPhone, confira o volume e o modo silencioso. No navegador, o microfone exige localhost ou HTTPS e depende do suporte do navegador.
+Para habilitar o backend, preencher os valores públicos de `.env.example` em `.env.local`. A chave OpenAI pertence apenas às Edge Functions. Nunca colocar segredos em `EXPO_PUBLIC_*`.
 
 ## Validar
 
@@ -43,43 +43,23 @@ O treino local funciona sem Supabase e sem chave de IA. O aparelho precisa de um
 npm run check
 npm run export:web
 npm run export:native
+npx deno check supabase/functions/coach/index.ts
 ```
 
-Exportar os bundles **não gera APK/IPA** e não comprova funcionamento do microfone em um telefone. O roteiro de teste real está em [docs/testing.md](docs/testing.md).
+Os testes de banco executam a migration em PostgreSQL embutido (PGlite), com papéis e função `auth.uid()` de teste. Não substituem um teste de integração na instância real do Supabase. Exportar os bundles não gera APK/IPA nem testa microfone ou e-mail no aparelho.
 
-## Arquitetura
+## Dados
 
-| Camada     | Nesta entrega                                   | Próxima integração                                                 |
-| ---------- | ----------------------------------------------- | ------------------------------------------------------------------ |
-| Aplicativo | Expo 57, React Native, TypeScript, Expo Router  | Development build e distribuição de teste                          |
-| Interface  | Componentes próprios e tema compartilhado       | Refinamento com feedback do piloto                                 |
-| Estado     | Contexto React e AsyncStorage com validação Zod | Cache de dados remotos quando houver backend                       |
-| Áudio      | expo-speech e expo-audio                        | Transcrição e feedback pelo backend                                |
-| Backend    | Arquitetura e contrato documentados             | Supabase próprio do Unmute: Auth, PostgreSQL, RLS e Edge Functions |
-| IA         | Contrato validado, sem chamadas                 | OpenAI no backend, com autenticação e orçamento de uso             |
-| Qualidade  | Node test runner, TypeScript, CI                | Testes de RLS e integração real                                    |
+O modo local mantém até 500 conclusões neste aparelho. Contas usam o banco remoto; o histórico local não é importado automaticamente. Cada conta recebe estado separado, evitando misturar dados em aparelhos compartilhados. O histórico autenticado requer conexão e não é apresentado como sincronizado quando a gravação falha.
 
-- [Arquitetura e decisões](docs/architecture.md)
-- [Produto e marcos](docs/product.md)
-- [Integração de IA](docs/ai.md)
-- [Preparação do banco](supabase/README.md)
-- [Testes e limites de validação](docs/testing.md)
+Áudio é temporário e só é enviado ao coach após a ação de envio. O backend encaminha o arquivo à OpenAI sem armazená-lo em bucket. Transcrição, resposta e correção são salvas na conta; não há gravação permanente para comparações semanais. Políticas de retenção do provedor ainda se aplicam ao processamento. As respostas de texto usam `store: false`.
 
-## Organização
+## Documentação
 
-- `app/`: rotas e composição das telas.
-- `src/features/learning/`: conteúdo inicial, modelos, validação e persistência.
-- `src/features/speaking/`: gravação e reprodução da voz.
-- `src/features/conversation/`: contrato para a futura avaliação.
-- `src/components/`: componentes e tema compartilhados.
-- `supabase/`: decisões para a futura configuração do backend.
-- `tests/`: regras de domínio.
-- `.github/workflows/`: validação de alterações.
+- [Arquitetura](docs/architecture.md)
+- [Ativação da infraestrutura](docs/deployment.md)
+- [Banco e políticas](supabase/README.md)
+- [IA e limites](docs/ai.md)
+- [Verificação](docs/testing.md)
 
-## Dados e credenciais
-
-O histórico fica apenas neste aparelho, com as 500 conclusões mais recentes. Desinstalar ou limpar os dados do app pode removê-lo. Gravações são temporárias e a aplicação tenta apagá-las ao repetir ou sair; uma interrupção abrupta pode deixar arquivos no cache até sua limpeza pelo sistema. Nenhum áudio é enviado para a nuvem nesta versão.
-
-Segredos de OpenAI e chaves privilegiadas de Supabase pertencem exclusivamente ao backend. Arquivos de ambiente locais são ignorados pelo Git. Não adicione segredos a `EXPO_PUBLIC_*`, `app.json` ou ao código mobile.
-
-Mudanças seguem por branch e pull request. A presença do workflow não significa que a proteção da branch já foi configurada. Não há deploy automático neste repositório.
+Alterações seguem por branch e PR. Nenhum deploy é disparado implicitamente ao fazer commit.

@@ -25,3 +25,4 @@ jobs:
       - run: npm run check
       - run: npm run export:web
       - run: npm run export:native
+      - run: npx --yes deno@2.9.6 check supabase/functions/coach/index.ts

@@ -4,9 +4,11 @@ import { Button, Card, colors, Screen, styles } from "../../src/components/ui";
 import { useLearning } from "../../src/features/learning/provider";
 import { summarize } from "../../src/features/learning/model";
 import { findLesson } from "../../src/features/learning/lessons";
+import { useAuth } from "../../src/features/auth/provider";
 
 export default function Progress() {
   const router = useRouter();
+  const { session } = useAuth();
   const { state } = useLearning();
   const total = summarize(state.sessions);
   return (
@@ -14,8 +16,11 @@ export default function Progress() {
       <Text style={styles.eyebrow}>Meu progresso</Text>
       <Text style={styles.title}>Cada tentativa{"\n"}conta.</Text>
       <Text style={styles.body}>
-        Seu histórico de prática neste aparelho. O tempo registrado é a duração
-        das gravações aceitas, incluindo eventuais pausas.
+        {session
+          ? "Seu histórico sincronizado nesta conta."
+          : "Seu histórico de prática neste aparelho."}{" "}
+        O tempo registrado é a duração das gravações aceitas, incluindo
+        eventuais pausas.
       </Text>
       <View style={[styles.row, { alignItems: "stretch" }]}>
         {[
@@ -70,6 +75,11 @@ export default function Progress() {
           ))}
         </>
       )}
+      <Button
+        label={session ? "Minha conta" : "Entrar para sincronizar"}
+        onPress={() => router.push("/account")}
+        secondary
+      />
       <Button
         label="Ajustar meu objetivo e ritmo"
         onPress={() => router.push("/onboarding")}
