@@ -15,7 +15,9 @@ export const supabase =
           ...(Platform.OS !== "web" ? { storage: AsyncStorage } : {}),
           autoRefreshToken: true,
           persistSession: true,
-          detectSessionInUrl: Platform.OS === "web",
+          // Confirmação e recuperação usam código digitado no app. Não aceite
+          // tokens de autenticação vindos de fragmentos/links da URL.
+          detectSessionInUrl: false,
         },
       })
     : null;
