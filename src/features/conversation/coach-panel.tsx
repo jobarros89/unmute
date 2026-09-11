@@ -81,9 +81,9 @@ export function CoachPanel({
           disabled={busy}
         />
         <Text style={styles.small}>
-          Ao enviar, você autoriza o processamento da tentativa pela OpenAI. O
-          áudio não é salvo no banco; a transcrição e a correção ficam no
-          histórico da sua conta.
+          Ao enviar, você autoriza o processamento da tentativa pela Cloudflare
+          Workers AI. O áudio não é salvo no banco; a transcrição e a correção
+          ficam no histórico da sua conta.
         </Text>
         <Button
           label="Enviar minha voz ao coach"

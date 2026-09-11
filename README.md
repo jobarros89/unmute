@@ -6,7 +6,7 @@ Aplicativo Expo para treinos curtos de listening, repetição e conversa. Esta b
 
 ## Estado real da entrega
 
-O código da aplicação e do backend está implementado. **O projeto Supabase está ativo em São Paulo, a migration foi aplicada e a função coach está publicada. A chave OpenAI e os ajustes de e-mail/Auth ainda estão pendentes; não há publicação do cliente nem APK/IPA nesta entrega.** Contas, sincronização e coach exigem esses serviços. Sem configuração, o aplicativo oferece prática local e informa que as contas ainda não estão disponíveis.
+O código da aplicação e do backend está implementado. **O projeto Supabase está ativo em São Paulo, a migration foi aplicada e a função coach está publicada. A credencial Cloudflare Workers AI e os ajustes de e-mail/Auth ainda estão pendentes; não há publicação do cliente nem APK/IPA nesta entrega.** Contas, sincronização e coach exigem esses serviços. Sem configuração, o aplicativo oferece prática local e informa que as contas ainda não estão disponíveis.
 
 | Funcionalidade        | Implementação                                                                       |
 | --------------------- | ----------------------------------------------------------------------------------- |
@@ -35,7 +35,7 @@ npm run web
 # Ou: npm start, para Expo Go compatível com SDK 57
 ```
 
-Para habilitar o backend, preencher os valores públicos de `.env.example` em `.env.local`. A chave OpenAI pertence apenas às Edge Functions. Nunca colocar segredos em `EXPO_PUBLIC_*`.
+Para habilitar o backend, preencher os valores públicos de `.env.example` em `.env.local`. A credencial Cloudflare Workers AI pertence apenas às Edge Functions. Nunca colocar segredos em `EXPO_PUBLIC_*`.
 
 ## Validar
 
@@ -52,7 +52,7 @@ Os testes de banco executam a migration em PostgreSQL embutido (PGlite), com pap
 
 O modo local mantém até 500 conclusões neste aparelho. Contas usam o banco remoto; o histórico local não é importado automaticamente. Cada conta recebe estado separado, evitando misturar dados em aparelhos compartilhados. O histórico autenticado requer conexão e não é apresentado como sincronizado quando a gravação falha.
 
-Áudio é temporário e só é enviado ao coach após a ação de envio. O backend encaminha o arquivo à OpenAI sem armazená-lo em bucket. Transcrição, resposta e correção são salvas na conta; não há gravação permanente para comparações semanais. Políticas de retenção do provedor ainda se aplicam ao processamento. As respostas de texto usam `store: false`.
+Áudio é temporário e só é enviado ao coach após a ação de envio. O backend encaminha o arquivo à Cloudflare Workers AI sem armazená-lo em bucket. Transcrição, resposta e correção são salvas na conta; não há gravação permanente para comparações semanais. Políticas de retenção do provedor ainda se aplicam ao processamento.
 
 ## Documentação
 

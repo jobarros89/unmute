@@ -14,7 +14,7 @@ O primeiro incremento é a prática local verificável. O próximo fecha o ciclo
 | Domínio                        | Armazenamento local        | Persistir preferências e conclusões, sem arquivos de voz         |
 | Aplicativo autenticado, futuro | Supabase                   | Ler e gravar somente dados autorizados por RLS                   |
 | Aplicativo autenticado, futuro | Edge Function de avaliação | Enviar tentativa limitada, após consentimento para processamento |
-| Edge Function, futuro          | OpenAI                     | Transcrever e avaliar com credencial privada                     |
+| Edge Function                  | Cloudflare Workers AI      | Transcrever e avaliar com credencial privada                     |
 
 O cliente nunca decide a identidade autorizada, o orçamento de uso nem o resultado final de uma avaliação. O servidor identifica o usuário pela sessão validada.
 
@@ -53,4 +53,4 @@ AuthProvider identifica a conta; LearningProvider é recriado por user_id para s
 
 Rotas adicionais: account, password, assessment, rooms e review. O plano diário usa objetivo/meta e a conclusão do dia. Revisões são produzidas a partir de correções do coach, com agendamento por autorrelato de lembrança. Não há um currículo adaptativo completo nem certificação CEFR.
 
-A camada de backend implementada é Supabase Auth/Postgres/Edge Functions. Projeto remoto, tabelas e Edge Function provisionados; credencial OpenAI, Auth/templates e publicação do cliente ainda pendentes. Ver docs/deployment.md. A tabela anterior de fronteiras descreve a fundação e seu destino; agora há código de integração, mas não um backend publicado.
+A camada de backend implementada é Supabase Auth/Postgres/Edge Functions. Projeto remoto, tabelas e Edge Function provisionados; credencial Cloudflare Workers AI, Auth/templates e publicação do cliente ainda pendentes. Ver docs/deployment.md. A tabela anterior de fronteiras descreve a fundação e seu destino; agora há código de integração, com função publicada e ativação da IA pendente.

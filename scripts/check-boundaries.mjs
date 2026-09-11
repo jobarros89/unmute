@@ -10,7 +10,7 @@ async function scan(directory) {
     else if (/\.[jt]sx?$/.test(file)) {
       const text = await readFile(file, "utf8");
       if (
-        /OPENAI_API_KEY|SUPABASE_SERVICE_ROLE_KEY|sb_secret_|sk-proj-/.test(
+        /CLOUDFLARE_AI_API_TOKEN|OPENAI_API_KEY|SUPABASE_SERVICE_ROLE_KEY|sb_secret_|sk-proj-/.test(
           text,
         )
       )

@@ -23,7 +23,7 @@ Critério técnico: instalar dependências pelo lockfile, validar os tipos, pass
 
 1. Criar e configurar um projeto Supabase separado; login com e-mail/senha e recuperação de acesso.
 2. Versionar o esquema mínimo; testar isolamento de dois usuários e acesso não autenticado.
-3. Configurar a chave OpenAI exclusivamente no backend.
+3. Configurar a credencial Cloudflare Workers AI exclusivamente no backend.
 4. Solicitar consentimento claro antes do primeiro envio de voz para análise.
 5. Enviar tentativa curta, transcrever, mostrar a transcrição e lidar com trechos não compreendidos.
 6. Oferecer uma correção específica e uma nova tentativa contextualizada.
