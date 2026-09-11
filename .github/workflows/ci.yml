@@ -1,0 +1,33 @@
+name: Validate Unmute
+
+# Modo econômico temporário: a franquia mensal do GitHub Actions está esgotada.
+# O workflow fica disponível somente para execução manual até a franquia voltar.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unmute-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: "1"
+      EXPO_NO_TELEMETRY: "1"
+      EXPO_OFFLINE: "1"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run export:web
+      - run: npm run export:native
+      - run: npx --yes deno@2.9.6 check supabase/functions/coach/index.ts
