@@ -27,7 +27,19 @@ function AppSession() {
           headerShown: false,
           contentStyle: { backgroundColor: colors.background },
         }}
-      />
+      >
+        <Stack.Screen name="account" />
+        <Stack.Protected guard={Boolean(session && !session.user.is_anonymous)}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="onboarding" />
+          <Stack.Screen name="lesson/[id]" />
+          <Stack.Screen name="assessment" />
+          <Stack.Screen name="rooms" />
+          <Stack.Screen name="review" />
+          <Stack.Screen name="password" />
+        </Stack.Protected>
+      </Stack>
     </LearningProvider>
   );
 }

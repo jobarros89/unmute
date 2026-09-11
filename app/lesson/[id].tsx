@@ -1,6 +1,5 @@
 import { randomUUID } from "expo-crypto";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
-import * as Speech from "expo-speech";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import {
@@ -20,6 +19,7 @@ import { useLearning } from "../../src/features/learning/provider";
 import { Recording } from "../../src/features/speaking/recording";
 import { CoachPanel } from "../../src/features/conversation/coach-panel";
 import { useAuth } from "../../src/features/auth/provider";
+import { speakEnglish, stopEnglish } from "../../src/features/speaking/speech";
 
 function ExerciseView({
   exercise,
@@ -44,18 +44,16 @@ function ExerciseView({
   const [speechError, setSpeechError] = useState("");
   useEffect(
     () => () => {
-      void Speech.stop();
+      stopEnglish();
     },
     [],
   );
   async function listen(rate: number) {
     try {
-      await Speech.stop();
       setSpeaking(true);
       setSpeechError("");
-      Speech.speak(exercise.phrase, {
-        language: "en-US",
-        rate,
+      speakEnglish(exercise.phrase, {
+        slow: rate < 0.9,
         onDone: () => setSpeaking(false),
         onStopped: () => setSpeaking(false),
         onError: () => {
@@ -85,7 +83,7 @@ function ExerciseView({
           disabled={recordingBusy || saving || showCoach}
         />
         <Button
-          label="Ouvir mais devagar"
+          label="Ouvir mais devagar · 0,5×"
           onPress={() => void listen(0.65)}
           secondary
           disabled={recordingBusy || saving || showCoach}
@@ -116,6 +114,7 @@ function ExerciseView({
             <Text style={styles.eyebrow}>02 · Entenda e repita</Text>
             <Text style={styles.body}>{exercise.tip}</Text>
             <Recording
+              label={exercise.phrase}
               onTake={setSeconds}
               onBusy={setRecordingBusy}
               disabled={showCoach}

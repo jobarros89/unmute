@@ -11,6 +11,7 @@ import * as Speech from "expo-speech";
 import { useEffect, useRef, useState } from "react";
 import { AppState, Platform, Text } from "react-native";
 import { Button, styles } from "../../components/ui";
+import { AudioReview } from "./audio-review";
 
 function removeTake(uri: string | null) {
   if (!uri) return;
@@ -30,11 +31,13 @@ export function Recording({
   onBusy,
   onUri,
   disabled = false,
+  label,
 }: {
   onTake: (seconds: number) => void;
   onBusy: (busy: boolean) => void;
   onUri?: (uri: string | null) => void;
   disabled?: boolean;
+  label?: string;
 }) {
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(recorder, 200);
@@ -86,7 +89,7 @@ export function Recording({
         );
       }
       savedUri.current = nextUri;
-      player.replace(nextUri);
+      if (Platform.OS !== "web") player.replace(nextUri);
       setUri(nextUri);
       callbacks.current.onTake(seconds);
       callbacks.current.onUri?.(nextUri);
@@ -239,12 +242,16 @@ export function Recording({
         disabled={disabled}
       />
       {uri && !recording ? (
-        <Button
-          label="Ouvir minha gravação"
-          onPress={() => void play()}
-          secondary
-          disabled={busy}
-        />
+        Platform.OS === "web" ? (
+          <AudioReview uri={uri} label={label} />
+        ) : (
+          <Button
+            label="Ouvir minha gravação"
+            onPress={() => void play()}
+            secondary
+            disabled={busy}
+          />
+        )
       ) : null}
       {error ? (
         <Text accessibilityRole="alert" style={styles.error}>

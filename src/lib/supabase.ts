@@ -5,6 +5,8 @@ import { Platform } from "react-native";
 
 const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const key = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+export const authRedirectTo =
+  Platform.OS === "web" ? globalThis.location?.origin : "unmute://auth";
 export const backendConfigured = Boolean(url && key);
 export const supabase =
   url && key
@@ -13,7 +15,7 @@ export const supabase =
           ...(Platform.OS !== "web" ? { storage: AsyncStorage } : {}),
           autoRefreshToken: true,
           persistSession: true,
-          detectSessionInUrl: false,
+          detectSessionInUrl: Platform.OS === "web",
         },
       })
     : null;

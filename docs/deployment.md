@@ -14,6 +14,7 @@ CLI validada: Supabase 2.101.0. Autenticar pela conta e vincular **o projeto exc
 
 Configurar no Auth real:
 
+- Em URL Configuration, definir Site URL como `https://unmute-english-josue.jobarros.chatgpt.site` e adicionar a mesma URL à Redirect URLs. O cliente envia essa URL na confirmação e recuperação de senha.
 - Confirmação de e-mail habilitada e senha mínima de 12 caracteres.
 - Templates `supabase/templates/confirmation.html` e `recovery.html`, com `{{ .Token }}`. As telas usam códigos, não dependem de links de redirecionamento.
 - SMTP adequado para e-mails aos usuários do piloto. Verificar limites e entrega com endereços reais antes de liberar cadastro.

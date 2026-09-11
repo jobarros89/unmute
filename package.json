@@ -35,6 +35,7 @@
     "typescript": "6.0.3"
   },
   "scripts": {
+    "build": "node scripts/build-web.mjs",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -42,7 +43,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "check": "npm run typecheck && npm test && npm run check:boundaries && npm run format:check",
-    "export:web": "expo export --platform web",
+    "export:web": "expo export --platform web --clear",
     "export:native": "expo export --platform ios --platform android",
     "check:boundaries": "node scripts/check-boundaries.mjs",
     "format": "prettier --write .",

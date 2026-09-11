@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
 import { Text, TextInput } from "react-native";
-import * as Speech from "expo-speech";
 import { Button, Card, styles } from "../../components/ui";
 import { askCoach, type CoachFeedback, type CoachInput } from "./coach";
 import { Recording } from "../speaking/recording";
+import { speakEnglish } from "../speaking/speech";
 
 export function Feedback({ value }: { value: CoachFeedback }) {
   return (
@@ -25,9 +25,13 @@ export function Feedback({ value }: { value: CoachFeedback }) {
         label="Ouvir a resposta"
         secondary
         onPress={() => {
-          void Speech.stop();
-          Speech.speak(value.reply, { language: "en-US", rate: 0.9 });
+          speakEnglish(value.reply);
         }}
+      />
+      <Button
+        label="Ouvir resposta mais devagar · 0,5×"
+        secondary
+        onPress={() => speakEnglish(value.reply, { slow: true })}
       />
       <Text style={styles.heading}>Tente agora</Text>
       <Text style={styles.body}>{value.followup}</Text>
@@ -75,6 +79,7 @@ export function CoachPanel({
       <Card>
         <Text style={styles.heading}>Sua vez de falar</Text>
         <Recording
+          label={context.reference || `Conversa: ${context.topic}`}
           onTake={() => undefined}
           onUri={setUri}
           onBusy={setRecordingBusy}

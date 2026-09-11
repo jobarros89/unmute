@@ -5,6 +5,7 @@ import { useLearning } from "../../src/features/learning/provider";
 import { summarize } from "../../src/features/learning/model";
 import { findLesson } from "../../src/features/learning/lessons";
 import { useAuth } from "../../src/features/auth/provider";
+import { SavedRecordings } from "../../src/features/speaking/audio-review";
 
 export default function Progress() {
   const router = useRouter();
@@ -75,6 +76,7 @@ export default function Progress() {
           ))}
         </>
       )}
+      <SavedRecordings />
       <Button
         label={session ? "Minha conta" : "Entrar para sincronizar"}
         onPress={() => router.push("/account")}

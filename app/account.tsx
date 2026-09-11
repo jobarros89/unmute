@@ -3,7 +3,11 @@ import { useState } from "react";
 import { Text, TextInput } from "react-native";
 import { Button, Card, Screen, styles } from "../src/components/ui";
 import { useAuth } from "../src/features/auth/provider";
-import { backendConfigured, requireBackend } from "../src/lib/supabase";
+import {
+  authRedirectTo,
+  backendConfigured,
+  requireBackend,
+} from "../src/lib/supabase";
 
 export default function Account() {
   const router = useRouter();
@@ -45,7 +49,9 @@ export default function Account() {
         return;
       }
       if (mode === "reset") {
-        const { error } = await db.auth.resetPasswordForEmail(address);
+        const { error } = await db.auth.resetPasswordForEmail(address, {
+          redirectTo: authRedirectTo,
+        });
         if (error) throw error;
         setMode("recovery");
         setMessage("Se o e-mail estiver cadastrado, você receberá um código.");
@@ -55,13 +61,19 @@ export default function Account() {
         throw new Error("Use uma senha com pelo menos 12 caracteres.");
       const result =
         mode === "signup"
-          ? await db.auth.signUp({ email: address, password })
+          ? await db.auth.signUp({
+              email: address,
+              password,
+              options: { emailRedirectTo: authRedirectTo },
+            })
           : await db.auth.signInWithPassword({ email: address, password });
       if (result.error) throw result.error;
       if (result.data.session) router.replace("/");
       else {
         setMode("verify");
-        setMessage("Enviamos um código de confirmação para seu e-mail.");
+        setMessage(
+          "Confira seu e-mail. Se recebeu um código, digite abaixo. Se recebeu um link, clique para confirmar e depois volte aqui e escolha Já tenho conta para entrar.",
+        );
       }
     } catch (e) {
       setMessage(
@@ -86,6 +98,14 @@ export default function Account() {
         <Card>
           <Text style={styles.heading}>Sua conta</Text>
           <Text style={styles.body}>{session.user.email}</Text>
+          <Text style={styles.small}>
+            Você já está conectado. O link de confirmação também permite entrar;
+            sua sessão fica salva neste aparelho até você sair.
+          </Text>
+          <Button
+            label="Continuar meus treinos"
+            onPress={() => router.replace("/")}
+          />
           <Text style={styles.body}>
             Seu perfil e os treinos feitos nesta conta são salvos na nuvem. A
             prática local fica separada.
