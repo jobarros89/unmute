@@ -1,0 +1,17 @@
+node_modules/
+.expo/
+dist/
+web-build/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+coverage/
+
+# Native build artifacts
+android/
+ios/
+
+# TypeScript
+*.tsbuildinfo
